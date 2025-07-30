@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
+import apiInstance from '../apiInstance';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -16,9 +17,8 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/products/${id}`);
-        const data = await res.json();
-        setProduct(data);
+        const res = await apiInstance.get(`/products/${id}`);
+        setProduct(res.data);
       } catch (err) {
         setProduct(null);
       } finally {

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import apiInstance from '../apiInstance';
 
 const CartContext = createContext();
 
@@ -12,13 +13,11 @@ export const CartProvider = ({ children }) => {
     if (!user) return;
     const token = user.token || localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/api/cart', {
+      const res = await apiInstance.get('/cart', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
-      }
+      const data = res.data;
+      setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
     } catch (error) {
       console.error('Failed to fetch cart:', error);
     }
@@ -44,18 +43,11 @@ export const CartProvider = ({ children }) => {
     if (!user) return; // Or handle guest cart
     const token = user.token || localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/api/cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ productId: product._id, quantity: 1 }),
+      const res = await apiInstance.post('/cart', { productId: product._id, quantity: 1 }, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
-      }
+      const data = res.data;
+      setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
     } catch (error) {
       console.error('Failed to add to cart:', error);
     }
@@ -65,14 +57,11 @@ export const CartProvider = ({ children }) => {
     if (!user) return;
     const token = user.token || localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:5000/api/cart/${id}`, {
-        method: 'DELETE',
+      const res = await apiInstance.delete(`/cart/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
-      }
+      const data = res.data;
+      setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
     } catch (error) {
       console.error('Failed to remove from cart:', error);
     }
@@ -82,18 +71,11 @@ export const CartProvider = ({ children }) => {
     if (!user || quantity < 1) return;
     const token = user.token || localStorage.getItem('token');
     try {
-      const res = await fetch(`http://localhost:5000/api/cart/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ quantity }),
+      const res = await apiInstance.put(`/cart/${id}`, { quantity }, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
-      }
+      const data = res.data;
+      setCart(data.map(item => ({...item.product, quantity: item.quantity, id: item.product._id})));
     } catch (error) {
       console.error('Failed to update quantity:', error);
     }

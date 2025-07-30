@@ -1,3 +1,4 @@
+import apiInstance from '../apiInstance';
 import React, { useState, useEffect } from "react";
 
 const AdminPanel = () => {
@@ -8,11 +9,10 @@ const AdminPanel = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("/api/users");
-        const data = await res.json();
-        setUsers(data);
+        const res = await apiInstance.get('/users');
+        setUsers(res.data);
       } catch (err) {
-        setError("Failed to fetch users");
+        setError('Failed to fetch users');
       } finally {
         setLoading(false);
       }

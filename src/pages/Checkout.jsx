@@ -1,3 +1,4 @@
+import apiInstance from '../apiInstance';
 import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -61,28 +62,26 @@ const Checkout = () => {
     setError('');
 
     try {
-      const res = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-        body: JSON.stringify({
-          items: checkoutItems.map(i => ({ product: i._id, quantity: i.quantity || 1 })),
-          shippingAddress: {
-            street: form.address,
-            city: 'TBD',
-            state: 'TBD',
-            zipCode: 'TBD',
-            country: 'TBD'
-          },
-          paymentMethod: form.paymentMethod,
-          totalPrice: total
-        }),
+      const token = localStorage.getItem('token');
+      const orderPayload = {
+        items: checkoutItems.map(i => ({ product: i._id, quantity: i.quantity || 1 })),
+        shippingAddress: {
+          street: form.address,
+          city: 'TBD',
+          state: 'TBD',
+          zipCode: 'TBD',
+          country: 'TBD'
+        },
+        paymentMethod: form.paymentMethod,
+        totalPrice: total
+      };
+      const res = await apiInstance.post('/orders', orderPayload, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to place order');
       clearCart();
       navigate('/profile'); // Redirect to profile/orders page
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message);
     }
   };
 

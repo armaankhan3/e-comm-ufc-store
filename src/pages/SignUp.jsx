@@ -1,3 +1,4 @@
+import apiInstance from '../apiInstance';
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -22,17 +23,8 @@ const SignUp = () => {
     }
     // Real API call to backend
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.message || 'Registration failed');
-        return;
-      }
-      // Optionally: auto-login or save token here
+      const res = await apiInstance.post('/auth/register', { name, email, password });
+      const data = res.data;
       navigate('/signin');
     } catch (err) {
       setError('Server error. Please try again.');

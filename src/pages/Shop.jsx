@@ -1,3 +1,4 @@
+import apiInstance from '../apiInstance';
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
@@ -19,8 +20,8 @@ const Shop = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('/api/products');
-        const data = await res.json();
+        const res = await apiInstance.get('/products');
+        const data = res.data;
         setProducts(Array.isArray(data) ? data : data.products || []);
       } catch (err) {
         setProducts([]);

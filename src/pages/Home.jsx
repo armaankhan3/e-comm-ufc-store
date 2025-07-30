@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import apiInstance from '../apiInstance';
 import gsap from 'gsap';
 import { FaTshirt, FaUserNinja, FaHatCowboy, FaHandRock, FaShoppingBag, FaBoxOpen } from 'react-icons/fa';
 
@@ -32,8 +33,8 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('/api/products');
-        const data = await res.json();
+        const res = await apiInstance.get('/products');
+        const data = res.data;
         setProducts(Array.isArray(data) ? data : data.products || []);
       } catch (err) {
         setProducts([]);

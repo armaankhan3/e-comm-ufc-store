@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
 
+import apiInstance from '../apiInstance';
 const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
@@ -26,11 +26,9 @@ export const ProductProvider = ({ children }) => {
         ...filters
       }).toString();
 
-      const response = await fetch(`http://localhost:5000/api/products?${queryParams}`);
-      const data = await response.json();
-      
-      if (!response.ok) throw new Error(data.message);
-      
+      const response = await apiInstance.get(`/products?${queryParams}`);
+      const data = response.data;
+      if (!response.status || response.status < 200 || response.status >= 300) throw new Error(data.message);
       setProducts(data.products);
     } catch (err) {
       setError(err.message);

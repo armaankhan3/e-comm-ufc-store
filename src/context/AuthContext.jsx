@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
 
+import { createContext, useContext, useEffect, useState } from 'react';
+import apiInstance from '../apiInstance.js';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -28,13 +29,8 @@ export const AuthProvider = ({ children }) => {
   // Real registration: call backend and store user/token
   const signUp = async (name, email, password) => {
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Registration failed');
+      const res = await apiInstance.post('/auth/register', { name, email, password });
+      const data = res.data;
       setUser(data.user);
       localStorage.setItem('user', JSON.stringify(data.user));
       if (data.token) localStorage.setItem('token', data.token);

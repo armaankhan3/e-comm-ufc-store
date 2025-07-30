@@ -1,3 +1,4 @@
+import apiInstance from '../apiInstance';
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -18,16 +19,8 @@ const SignIn = () => {
       return;
     }
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.message || 'Invalid credentials.');
-        return;
-      }
+      const res = await apiInstance.post('/auth/login', { email, password });
+      const data = res.data;
       // Save user/token in AuthContext
       signIn(email, password, data.user, data.token);
       // After login, perform intended action or redirect
