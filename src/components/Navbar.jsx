@@ -56,6 +56,14 @@ const Navbar = () => {
           </>
         ) : (
           <>
+            {user.isAdmin && (
+              <button
+                className="bg-accent text-dark px-4 py-2 rounded hover:bg-accent-dark font-semibold transition"
+                onClick={() => navigate('/admin')}
+              >
+                Admin Panel
+              </button>
+            )}
             <span className="text-gray-900 font-semibold">Hello, {user.name}</span>
             <button
               className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700 font-semibold transition"
@@ -108,6 +116,14 @@ const Navbar = () => {
             </>
           ) : (
             <>
+              {user.isAdmin && (
+                <button
+                  className="bg-accent text-dark px-4 py-2 rounded hover:bg-accent-dark font-semibold transition"
+                  onClick={() => { setMobileMenuOpen(false); navigate('/admin'); }}
+                >
+                  Admin Panel
+                </button>
+              )}
               <span className="text-gray-900 font-semibold">Hello, {user.name}</span>
               <button
                 className="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-700 font-semibold transition"
